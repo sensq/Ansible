@@ -1,0 +1,14 @@
+---
+- name: start firewalld
+  service:
+    name: firewalld
+    state: started
+    enabled: yes
+    
+- name: "configured firewalld (open port:{{ rails_port }})"
+  firewalld:
+    port: "{{ rails_port }}/tcp"
+    permanent: true
+    state: enabled
+    immediate: yes
+    

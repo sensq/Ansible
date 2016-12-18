@@ -49,9 +49,12 @@
     - name: Install Rails
       include: 04-Install_Rails.yml
       when: installed_rails.rc != 0
+      
+    - name: Install Rails
+      include: 05-Configure_Firewall.yml
 
     - name: Create Sample
-      include: 05-Create_Sample.yml
+      include: 06-Create_Sample.yml
       when:
         - sample_app_path is defined
         - started_sample.rc != 0
