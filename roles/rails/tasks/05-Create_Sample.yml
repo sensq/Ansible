@@ -1,0 +1,44 @@
+---
+- name: check created sample app
+  stat: 
+    path: "{{ sample_app_path }}"
+  register: created_sample
+  
+- name: create sample app
+  shell: "rails new {{ sample_app_path }}"
+  when: created_sample.stat.exists == False
+  
+- name: include therubyracer (Gemfile)
+  lineinfile: 
+    dest: "{{ sample_app_path }}/Gemfile"
+    line: "gem 'therubyracer'"
+    regexp: "^gem 'therubyracer'.*"
+  when: created_sample.stat.exists == False
+    
+- name: bundle update
+  shell: bundle update
+  args:
+    chdir: "{{ sample_app_path }}"
+  when: created_sample.stat.exists == False
+    
+- name: bundle install
+  shell: bundle install
+  args:
+    chdir: "{{ sample_app_path }}"
+  when: created_sample.stat.exists == False
+    
+- name: start rails server
+  shell: "rails server -db {{ rails_url }} -p {{ rails_port }}"
+  args:
+    chdir: "{{ sample_app_path }}"
+    
+- name: show rails pid
+  shell: cat "{{ sample_app_path }}/tmp/pids/server.pid"
+  register: pid
+  
+- name: show rails url
+  debug:
+    msg:
+      - "url: http://{{ rails_url }}:{{ rails_port }}"
+      - "pid: {{ pid.stdout }}"
+      - "stop server command: kill -9 {{ pid.stdout }}"

@@ -1,0 +1,19 @@
+---
+- name: install pre package
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - gcc-c++
+    - glibc-headers
+    - openssl-devel
+    - readline
+    - libyaml-devel
+    - readline-devel
+    - zlib
+    - zlib-devel
+    - bzip2
+    - sqlite-devel
+    - git
+    - libselinux-python
+    - firewalld

@@ -1,0 +1,57 @@
+---
+- hosts: all
+  user: root
+  gather_facts: no
+  vars:
+    - ruby_version: 2.3.1
+    - rails_version: 5.0.0.1
+    - rails_url: "{{ inventory_hostname }}"
+    - rails_port: 3000
+    - sample_app_path: /root/sample_app
+    
+  pre_tasks:
+    - name: check installed rbenv
+      shell: rbenv --version
+      register: installed_rbenv
+      changed_when: False
+      failed_when: False
+      
+    - name: check installed ruby
+      shell: ruby -v
+      register: installed_ruby
+      changed_when: False
+      failed_when: False
+      
+    - name: check installed rails
+      shell: rails -v
+      register: installed_rails
+      changed_when: False
+      failed_when: False
+      
+    - name: check started sample_app
+      shell: ps aux | grep [t]cp://192.168.1.251:3000
+      register: started_sample
+      changed_when: False
+      failed_when: False
+      
+  tasks:
+    - name: Install dependent packages
+      include: 01-Install_Base_Package.yml
+      
+    - name: Install rbenv
+      include: 02-Install_rbenv.yml
+      when: installed_rbenv.rc != 0
+      
+    - name: Install ruby
+      include: 03-Install_Ruby.yml
+      when: installed_ruby.rc != 0
+      
+    - name: Install Rails
+      include: 04-Install_Rails.yml
+      when: installed_rails.rc != 0
+
+    - name: Create Sample
+      include: 05-Create_Sample.yml
+      when:
+        - sample_app_path is defined
+        - started_sample.rc != 0

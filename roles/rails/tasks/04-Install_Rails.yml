@@ -1,0 +1,26 @@
+---
+- name: gem update
+  shell: gem update --system
+  
+- name: install rails
+  shell: "gem install --no-ri --no-rdoc rails  --version {{ rails_version }}"
+  
+- name: install bundler
+  shell: gem install bundler
+  
+- name: rbenv rehash
+  shell: rbenv rehash
+  
+- name: start firewalld
+  service:
+    name: firewalld
+    state: started
+    enabled: yes
+    
+- name: "configured firewalld (open port:{{ rails_port }})"
+  firewalld:
+    port: "{{ rails_port }}/tcp"
+    permanent: true
+    state: enabled
+    immediate: yes
+    
