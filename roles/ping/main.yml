@@ -1,0 +1,17 @@
+---
+- hosts: all
+  user: root
+  gather_facts: no
+  vars:
+    - local_ip: 192.168.1.101
+  tasks:
+    - name: check ping
+      shell: ping "{{ inventory_hostname }}" -c 1
+      delegate_to: 127.0.0.1
+      register: ret
+      ignore_errors: yes
+      failed_when: ret.rc != 0
+      
+    - name: check ssh
+      shell: ping "{{ local_ip }}" -c 1
+      ignore_errors: yes

@@ -1,0 +1,56 @@
+---
+- hosts: all
+  user: root
+  gather_facts: no
+  vars_files:
+    - ../vars/main.yml
+    
+  pre_tasks:
+    - name: check installed nvm
+      stat: 
+        path: /root/.nvm
+      register: installed_nvm
+      
+    - name: check installed mongodb
+      stat: 
+        path: /etc/yum.repos.d/mongodb.repo
+      register: installed_mongodb
+      
+    - name: start mongodb
+      shell: ps aux | grep "[m]ongod"
+      register: started_mongodb
+      failed_when: False
+      changed_when: False
+      
+    - name: check installed wekan
+      stat: 
+        path: /root/wekan
+      register: installed_wekan
+      
+    - name: check started wekan
+      shell: ps aux | grep "[n]ode main.js"
+      register: started_wekan
+      failed_when: False
+      changed_when: False
+  
+  tasks:
+    - name: install pre package
+      include: 01-Install_Base_Package.yml
+      
+    - name: install NodeJS
+      include: 02-Install_NodeJS.yml
+      when: installed_nvm.stat.exists == False
+      
+    - name: install mongodb
+      include: 03-Install_mongoDB.yml
+      when: started_mongodb.rc != 0
+      
+    - name: install wekan
+      include: 04-Install_wekan.yml
+      when: installed_wekan.stat.exists == False
+      
+    - name: start wekan
+      include: 05-Start_wekan.yml
+      when: started_wekan.rc != 0
+
+# iptablesの設定

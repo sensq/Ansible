@@ -1,0 +1,12 @@
+---
+- name: stop iptables  # [warn]必要なポートだけ空けるように直す,[pend]centos6と7で分ける
+  service: 
+    name: iptables
+    state: stopped
+    
+- name: start wekan
+  shell: /root/node_modules/.bin/forever start "{{ wekan.install_dir }}"/bundle/main.js  # [warn]root固定
+  environment:
+    MONGO_URL: "{{ wekan.env.mongo_url }}"
+    ROOT_URL: "{{ wekan.env.root_url }}"
+    PORT: "{{ wekan.env.port }}"

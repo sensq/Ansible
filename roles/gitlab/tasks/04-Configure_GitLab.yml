@@ -1,0 +1,11 @@
+---
+- name: configure gitlab
+  lineinfile:
+    dest: /etc/gitlab/gitlab.rb
+    line: "external_url 'http://{{ url }}:{{ port }}'"
+    regexp: "^external_url.*"
+  register: ret
+    
+- name: reconfigure gitlab
+  shell: gitlab-ctl reconfigure
+  when: ret.changed == True

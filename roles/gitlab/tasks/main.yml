@@ -1,0 +1,27 @@
+---
+- hosts: all
+  user: root
+  gather_facts: no
+  vars:
+    - url: "{{ inventory_hostname }}"
+    - port: 8000
+    
+  pre_tasks:
+    - name: check installed gitlab
+      shell: rpm -qa | grep gitlab-ce
+      register: installed_gitlab
+      changed_when: False
+      
+  tasks:
+    - name: Install and configure the necessary dependencies
+      include: 01-Install_Base_Package.yml
+      
+    - name: Add the GitLab package server and install the package
+      include: 02-Install_GitLab.yml
+      when: installed_gitlab.rc != 0
+      
+    - name: Start Base Service
+      include: 03-Start_Base_Service.yml
+      
+    - name: Configure and start GitLab
+      include: 04-Configure_GitLab.yml

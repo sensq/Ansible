@@ -1,0 +1,23 @@
+---
+- hosts: all
+  user: root
+  gather_facts: no
+  vars_files:
+    - ../vars/main.yml
+    
+  pre_tasks:
+    - name: check cloned git
+      stat: 
+        path: "{{ git.dest }}"
+      register: cloned_git
+      
+  tasks:
+    - name: install pre package
+      include: 01-Install_Base_Package.yml
+      
+    - name: install latest git
+      include: 02-Install_Git.yml
+      when: cloned_git.stat.exists == False
+      
+    - name: configure git
+      include: 03-Configure_Git.yml

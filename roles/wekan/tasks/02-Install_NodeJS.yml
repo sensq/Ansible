@@ -1,0 +1,15 @@
+---
+- name: install nvm
+  shell: |
+    git clone "{{ nodejs.nvm.src }}" "{{ nodejs.nvm.dst }}"
+    echo "source "{{ nodejs.nvm.dst }}"/nvm.sh" >> /root/.bashrc  # [warn]root固定、[pend]lineinfileに書き直す
+  
+- name: install nodejs
+  shell: |
+    source "{{ nodejs.nvm.dst }}"/nvm.sh
+    nvm install v"{{ nodejs.version }}"
+
+- name: install forever
+  shell: |
+    source "{{ nodejs.nvm.dst }}"/nvm.sh
+    npm install forever

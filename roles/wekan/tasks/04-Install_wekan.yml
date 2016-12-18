@@ -1,0 +1,19 @@
+---
+- name: mkdir "{{ wekan.install_dir }}"
+  file:
+    path: "{{ wekan.install_dir }}"
+    state: directory
+  
+- name: send wekan.tar.gz
+  copy:
+    src: "{{ playbook_dir }}/../files/{{ wekan.install_file }}"
+    dest: "{{ wekan.install_dir }}"
+    
+- name: unarchive wekan
+  unarchive:
+    src: "{{ wekan.install_dir }}/{{ wekan.install_file }}"
+    dest: "{{ wekan.install_dir }}"
+    remote_src: yes
+  
+- name: install dependent modules
+  shell: cd "{{ wekan.install_dir }}"/bundle/programs/server && npm install

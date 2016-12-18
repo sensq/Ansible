@@ -1,0 +1,22 @@
+---
+- name: install pre package
+  yum:
+    name: git
+    state: present
+  
+- name: clone latest git
+  git:
+    repo: "{{ git.repo }}"
+    dest: "{{ git.dest }}"
+
+- name: make git from source
+  shell: |
+    make prefix=/usr/local all
+    make prefix=/usr/local install
+  args:
+    chdir: "{{ git.dest }}"
+
+- name: remove old git
+  yum:
+    name: git
+    state: absent

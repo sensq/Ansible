@@ -1,0 +1,17 @@
+---
+pre_package:
+  - wget
+  - git
+  - libselinux-python
+nodejs:
+  version: 0.10.40
+  nvm:
+    src: https://github.com/creationix/nvm.git
+    dst: /root/.nvm
+wekan:
+  install_dir: /root/wekan
+  install_file: wekan-0.10.1.tar.gz
+  env:
+    mongo_url: mongodb://127.0.0.1:27017/wekan
+    root_url: http://kanban.com
+    port: 8539

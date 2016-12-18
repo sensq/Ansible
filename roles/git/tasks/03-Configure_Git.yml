@@ -1,0 +1,32 @@
+---
+- name: configured git_config
+  git_config:
+    name: "{{ item.name }}"
+    scope: "{{ item.scope }}"
+    value: "{{ item.value }}"
+  with_items: "{{ git.config }}"
+  
+- name: put git-completion.bash
+  copy: 
+    src: "{{ playbook_dir }}/../files/{{ git.completion.src }}"
+    dest: "{{ git.dest }}"
+    
+- name: add source path to bashrc
+  lineinfile:
+    dest: /root/.bashrc
+    line: "source {{ git.dest }}/git-completion.bash"
+    regexp: "source {{ git.dest }}/git-completion.bash"
+    
+- block:
+  - name: configure prompt pre
+    shell: cat "{{ playbook_dir }}/../files/git-prompt"
+    register: prompt_script
+    changed_when: False
+    delegate_to: 127.0.0.1
+    run_once: yes
+    
+  - name: configure prompt
+    blockinfile:
+      dest: /root/.bashrc
+      block: "{{ prompt_script.stdout }}"
+      marker: "#{mark} GIT PROMPT"

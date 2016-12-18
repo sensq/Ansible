@@ -1,0 +1,40 @@
+---
+pre_package:
+  - curl-devel
+  - expat-devel
+  - gettext-devel
+  - openssl-devel
+  - zlib-devel
+  - perl-ExtUtils-MakeMaker
+  - gcc
+  - libselinux-python
+git:
+  repo: https://github.com/git/git.git
+  dest: /usr/local/src/git
+  config:
+    - name: user.name
+      scope: global
+      value: test
+    - name: user.email
+      scope: global
+      value: sample@example.com
+    - name: color.ui
+      scope: global
+      value: auto
+    - name: alias.s
+      scope: global
+      value: status
+    - name: alias.co
+      scope: global
+      value: checkout
+    - name: alias.com
+      scope: global
+      value: checkout master
+    - name: alias.b
+      scope: global
+      value: branch
+    - name: alias.unstage
+      scope: global
+      value: reset HEAD
+  completion:
+    src: git-completion.bash

@@ -1,0 +1,9 @@
+---
+- name: curl
+  shell: curl -sS https://packages.gitlab.com/install/repositories/gitlab/gitlab-ce/script.rpm.sh | sudo bash
+  
+- name: install gitlab-ce
+  yum: 
+    name: gitlab-ce
+    state: present
+    
